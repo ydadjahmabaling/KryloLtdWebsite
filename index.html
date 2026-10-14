@@ -1,317 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#eef6ff" />
-  <meta name="description" content="A modern, blue-glass portfolio for a designer, developer, or creative." />
-  <title>Krylo Ltd — Design & Development</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      color-scheme: light;
-      --ink: #101c35;
-      --muted: #5e6d87;
-      --blue: #246bfe;
-      --blue-deep: #1846c7;
-      --line: rgba(255,255,255,.72);
-      --glass: rgba(255,255,255,.47);
-      --shadow: 0 24px 70px rgba(55, 102, 190, .13);
-      --ease: cubic-bezier(.2,.75,.25,1);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
-    body {
-      margin: 0; min-height: 100vh; color: var(--ink);
-      background: #f3f8ff;
-      font-family: "DM Sans", system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: ""; position: fixed; inset: 0; z-index: -3; pointer-events: none;
-      background:
-        radial-gradient(ellipse at 74% 13%, rgba(87, 123, 255, .42), transparent 31%),
-        radial-gradient(ellipse at 89% 37%, rgba(73, 194, 255, .34), transparent 28%),
-        radial-gradient(ellipse at 48% 63%, rgba(134, 176, 255, .38), transparent 31%),
-        radial-gradient(ellipse at 24% 43%, rgba(208, 232, 255, .95), transparent 35%),
-        linear-gradient(125deg, #ffffff 0%, #f1f7ff 44%, #eaf3ff 100%);
-    }
-    .grain {
-      position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: .13;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-    }
-    a { color: inherit; text-decoration: none; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    .shell { width: min(1380px, calc(100% - 9vw)); margin-inline: auto; }
-    .nav {
-      position: sticky; top: 0; z-index: 20; padding: 22px 0;
-      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
-      background: rgba(245, 249, 255, .64); border-bottom: 1px solid rgba(255,255,255,.75);
-    }
-    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-    .brand { display: inline-flex; align-items: center; gap: 13px; min-width: 225px; }
-    .brand-mark {
-      width: 47px; height: 47px; object-fit: contain; display: block;
-      border-radius: 12px;
-    }
-    .brand-fallback {
-      width: 47px; height: 47px; display: grid; place-items: center; border-radius: 14px;
-      font-weight: 800; font-size: 21px; color: #fff;
-      background: linear-gradient(145deg, #83b8ff, #245df2);
-      box-shadow: 0 8px 22px rgba(36,107,254,.25);
-    }
-    .brand-name { font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
-    .brand-role { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
-    .nav-links { display: flex; align-items: center; gap: clamp(22px, 5vw, 76px); }
-    .nav-links a { font-size: 14px; color: #263754; position: relative; transition: color .25s ease; }
-    .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -7px; width: 100%; height: 1px; background: var(--blue); transform: scaleX(0); transform-origin: right; transition: transform .3s var(--ease); }
-    .nav-links a:hover { color: var(--blue); }
-    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
-    .social-link { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; color: #18366e; background: rgba(255,255,255,.62); border: 1px solid rgba(255,255,255,.9); box-shadow: 0 7px 20px rgba(50,95,160,.08); transition: transform .25s var(--ease), box-shadow .25s ease; }
-    .social-link:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(50,95,160,.16); }
-    .social-link svg { width: 19px; height: 19px; }
-    .menu-toggle { display: none; border: 0; background: rgba(255,255,255,.7); border-radius: 12px; padding: 10px; color: var(--ink); }
-    .hero { min-height: min(790px, calc(100svh - 90px)); display: flex; align-items: center; padding: 100px 0 112px; position: relative; isolation: isolate; }
-    .hero::before { content: "K /"; position: absolute; right: 5%; top: 8%; z-index: -1; font: 800 clamp(120px,22vw,300px)/.8 "DM Sans", sans-serif; letter-spacing: -.12em; color: rgba(255,255,255,.28); transform: rotate(-8deg); pointer-events:none; }
-    .hero-copy { width: min(880px, 76%); position: relative; z-index: 2; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 9px 14px; border-radius: 100px; border: 1px solid rgba(255,255,255,.9); background: rgba(255,255,255,.5); backdrop-filter: blur(16px); color: #31538a; font-size: 12px; font-weight: 600; letter-spacing: .06em; box-shadow: 0 8px 24px rgba(65,105,180,.07); }
-    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: #2d80ff; box-shadow: 0 0 0 4px rgba(45,128,255,.12); }
-    h1 { margin: 30px 0 25px; font-family: "Playfair Display", Georgia, serif; font-size: clamp(58px, 8.3vw, 124px); line-height: .94; letter-spacing: -.065em; font-weight: 700; }
-    h1 .gradient-text { color: var(--blue); background: linear-gradient(100deg, #12234a 0%, #246bfe 48%, #73caff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-description { max-width: 720px; font-size: clamp(17px, 2vw, 25px); line-height: 1.55; color: #435571; letter-spacing: -.025em; margin: 0; }
-    .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; margin-top: 47px; }
-    .primary-btn { display: inline-flex; align-items: center; gap: 17px; min-height: 62px; padding: 7px 25px 7px 8px; border-radius: 100px; color: #fff; font-size: 14px; font-weight: 600; background: linear-gradient(115deg, #347cff, #1851d9); box-shadow: 0 12px 27px rgba(35,99,235,.25), inset 0 1px 0 rgba(255,255,255,.45); border: 1px solid rgba(255,255,255,.65); transition: transform .25s var(--ease), box-shadow .25s ease, filter .25s ease; }
-    .primary-btn:hover { transform: translateY(-3px); filter: saturate(1.1); box-shadow: 0 18px 34px rgba(35,99,235,.32), inset 0 1px 0 rgba(255,255,255,.5); }
-    .primary-btn:active { transform: translateY(0) scale(.98); }
-    .btn-icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.32); transition: transform .3s var(--ease), background .25s ease; }
-    .primary-btn:hover .btn-icon { transform: rotate(45deg); background: rgba(255,255,255,.27); }
-    .btn-icon svg { width: 19px; height: 19px; }
-    .text-btn { display: inline-flex; align-items: center; gap: 9px; padding: 13px 0; font-size: 14px; font-weight: 600; color: #38547f; transition: color .2s ease, gap .2s ease; }
-    .text-btn:hover { color: var(--blue); gap: 14px; }
-    .text-btn svg { width: 17px; height: 17px; }
-    .hero-orb { position: absolute; z-index: 0; width: min(52vw, 680px); aspect-ratio: 1; right: 1%; top: 50%; transform: translateY(-48%); border-radius: 50%; opacity: .82; filter: blur(1px); background: radial-gradient(circle at 30% 28%, rgba(255,255,255,.96) 0 4%, rgba(255,255,255,.25) 17%, transparent 31%), radial-gradient(ellipse at 35% 31%, #bfe6ff 0%, #82baff 24%, #7897ff 42%, #c2c8ff 59%, rgba(232,243,255,.1) 73%); box-shadow: inset -28px -22px 75px rgba(48,105,225,.13), inset 12px 12px 45px rgba(255,255,255,.8), 0 0 90px rgba(105,151,255,.18); animation: float 9s ease-in-out infinite; }
-    .hero-orb::before, .hero-orb::after { content: ""; position: absolute; border-radius: 50%; }
-    .hero-orb::before { inset: 10%; border: 1px solid rgba(255,255,255,.62); box-shadow: 0 0 50px rgba(255,255,255,.5); }
-    .hero-orb::after { width: 25%; height: 25%; top: 10%; right: 17%; background: rgba(255,255,255,.42); filter: blur(28px); }
-    @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -16px; } }
-    @keyframes morphFloat { 0%,100% { translate: 0 0; border-radius: 44% 56% 58% 42% / 44% 43% 57% 56%; } 50% { translate: 0 -17px; border-radius: 57% 43% 43% 57% / 52% 58% 42% 48%; } }
-    .hero-orb { border-radius: 44% 56% 58% 42% / 44% 43% 57% 56%; animation: morphFloat 12s ease-in-out infinite; }
-    .project-card { transition: transform .55s var(--ease), box-shadow .45s ease, border-radius .45s var(--ease); }
-    .project-card:hover { border-radius: 22px 34px 22px 34px; }
-    .reveal { opacity: 0; transform: translateY(28px) scale(.985); filter: blur(4px); transition: opacity .8s var(--ease), transform .8s var(--ease), filter .8s var(--ease); }
-    .reveal.visible { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    .contact-reveal { display: inline-flex; align-items: center; gap: 12px; max-width: 100%; margin-top: 18px; padding: 12px 16px; border: 1px solid rgba(255,255,255,.94); border-radius: 16px; color: #173b79; background: rgba(255,255,255,.66); box-shadow: 0 10px 28px rgba(42,91,166,.10); backdrop-filter: blur(16px); opacity: 0; transform: translateY(9px); pointer-events: none; transition: opacity .35s ease, transform .45s var(--ease); }
-    .contact-reveal.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .contact-reveal a { font-weight: 700; overflow-wrap: anywhere; }
-    .copy-email { border: 0; border-radius: 10px; padding: 8px 10px; color: #fff; background: #246bfe; font: 600 11px "DM Sans",sans-serif; cursor: pointer; transition: transform .2s ease, background .2s ease; }
-    .copy-email:hover { background: #174cc8; transform: translateY(-1px); }
-    .email-toast { position: fixed; right: 22px; bottom: 22px; z-index: 50; padding: 15px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,.9); background: rgba(255,255,255,.8); backdrop-filter: blur(24px); box-shadow: var(--shadow); color: #203b69; display: flex; gap: 12px; align-items: center; opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .35s ease, transform .45s var(--ease); }
-    .email-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .email-toast strong { font-size: 13px; display:block; }
-    .email-toast span { color: var(--muted); font-size: 12px; }
-    .hero-note { position: absolute; right: 4%; bottom: 12%; display: flex; align-items: center; gap: 12px; padding: 14px 17px; border-radius: 18px; border: 1px solid rgba(255,255,255,.85); background: rgba(255,255,255,.47); backdrop-filter: blur(18px); box-shadow: var(--shadow); color: #39537d; font-size: 12px; z-index: 3; }
-    .note-icon { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 11px; background: linear-gradient(135deg,#e2f2ff,#b8d5ff); color: #2164e8; }
-    .note-icon svg { width: 17px; height: 17px; }
-    section.content-section { padding: 92px 0; }
-    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
-    .section-kicker { color: #3974d9; text-transform: uppercase; letter-spacing: .16em; font-size: 11px; font-weight: 700; }
-    h2 { margin: 12px 0 0; font: 700 clamp(32px,4vw,53px)/1.05 "Playfair Display", Georgia, serif; letter-spacing: -.045em; }
-    .section-intro { max-width: 420px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
-    .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
-    .project-card { overflow: hidden; border-radius: 25px; border: 1px solid rgba(255,255,255,.92); background: rgba(255,255,255,.48); backdrop-filter: blur(18px); box-shadow: 0 16px 45px rgba(58,103,178,.08); transition: transform .3s var(--ease), box-shadow .3s ease; }
-    .project-card:hover { transform: translateY(-7px); box-shadow: 0 24px 52px rgba(58,103,178,.15); }
-    .project-art { height: 230px; position: relative; overflow: hidden; display: grid; place-items: center; background: linear-gradient(135deg,#d9edff,#a6caff 52%,#e5f4ff); }
-    .project-art::before { content: ""; position: absolute; width: 190px; height: 190px; border-radius: 50%; background: rgba(255,255,255,.55); filter: blur(1px); }
-    .mock-window { position: relative; width: 72%; height: 65%; border-radius: 13px; background: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.95); box-shadow: 0 16px 35px rgba(45,95,170,.18); padding: 13px; transform: rotate(-4deg); }
-    .mock-dots { display: flex; gap: 4px; margin-bottom: 13px; }
-    .mock-dots i { width: 5px; height: 5px; border-radius: 50%; background: #7ca9f5; }
-    .mock-line { height: 6px; border-radius: 9px; background: #b8d7ff; margin: 7px 0; }
-    .mock-line.short { width: 52%; background: #6e9cf4; }
-    .mock-blocks { display: flex; gap: 6px; margin-top: 12px; }
-    .mock-blocks span { height: 39px; flex: 1; border-radius: 6px; background: linear-gradient(145deg,#d4e8ff,#8cb7ff); }
-    .project-card:nth-child(2) .project-art { background: linear-gradient(135deg,#d7f4ff,#a8ddf5,#d9e4ff); }
-    .project-card:nth-child(2) .mock-window { transform: rotate(4deg); }
-    .project-card:nth-child(2) .mock-blocks span { background: linear-gradient(145deg,#d2f8ff,#79c7f0); }
-    .project-card:nth-child(3) .project-art { background: linear-gradient(135deg,#dce2ff,#a9b9ff,#edf4ff); }
-    .project-card:nth-child(3) .mock-window { transform: rotate(-2deg); }
-    .project-meta { padding: 21px 22px 23px; }
-    .project-type { font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: #4c7ac4; font-weight: 700; }
-    .project-title { font-size: 19px; margin: 8px 0 7px; letter-spacing: -.035em; }
-    .project-desc { font-size: 13px; line-height: 1.6; color: var(--muted); margin: 0; }
-    .about-panel { display: grid; grid-template-columns: .8fr 1.2fr; gap: 38px; padding: clamp(25px,5vw,58px); border-radius: 30px; border: 1px solid rgba(255,255,255,.9); background: rgba(255,255,255,.5); backdrop-filter: blur(22px); box-shadow: var(--shadow); }
-    .about-stat { padding: 24px; border-radius: 20px; background: linear-gradient(145deg,rgba(255,255,255,.85),rgba(218,235,255,.62)); border: 1px solid rgba(255,255,255,.95); }
-    .stat-number { font: 700 48px/1 "Playfair Display", Georgia, serif; color: #2768e9; }
-    .stat-label { color: var(--muted); font-size: 13px; margin-top: 9px; }
-    .about-copy p { color: var(--muted); line-height: 1.8; margin: 0 0 17px; font-size: 15px; }
-    .skill-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 23px; }
-    .skill-list span { padding: 9px 12px; font-size: 11px; font-weight: 600; color: #3d5d8e; border-radius: 100px; background: rgba(221,237,255,.72); border: 1px solid rgba(255,255,255,.95); }
-    .contact-panel { padding: clamp(30px,6vw,72px); text-align: center; border-radius: 32px; background: linear-gradient(130deg,rgba(255,255,255,.78),rgba(210,231,255,.65)); border: 1px solid rgba(255,255,255,.95); box-shadow: var(--shadow); backdrop-filter: blur(22px); }
-    .contact-panel h2 { max-width: 700px; margin: 14px auto 18px; }
-    .contact-panel p { max-width: 530px; margin: 0 auto; color: var(--muted); line-height: 1.7; }
-    .contact-panel .primary-btn { margin-top: 28px; }
-    footer { padding: 28px 0 35px; color: #71809a; font-size: 12px; }
-    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 1px solid rgba(125,160,210,.2); padding-top: 23px; }
-    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; animation: none !important; transition-duration: .01ms !important; } .reveal { opacity: 1; transform: none; } }
-    @media (max-width: 800px) {
-      .shell { width: min(100% - 40px, 650px); }
-      .nav { padding: 14px 0; }
-      .brand { min-width: 0; }
-      .nav-links { display: none; position: absolute; top: calc(100% + 8px); left: 20px; right: 20px; padding: 18px; border-radius: 20px; flex-direction: column; align-items: stretch; gap: 0; background: rgba(255,255,255,.87); border: 1px solid #fff; box-shadow: var(--shadow); backdrop-filter: blur(22px); }
-      .nav-links.open { display: flex; }
-      .nav-links a { padding: 14px 8px; }
-      .nav-links a::after { display: none; }
-      .social-link { margin-left: auto; }
-      .menu-toggle { display: grid; place-items: center; }
-      .hero { min-height: 740px; padding: 86px 0 110px; align-items: flex-start; }
-      .hero-copy { width: 100%; }
-      h1 { font-size: clamp(55px, 12vw, 86px); }
-      .hero-description { max-width: 550px; }
-      .hero-orb { width: 78vw; right: -19%; top: auto; bottom: -1%; transform: none; opacity: .62; }
-      .hero-note { right: 0; bottom: 4%; }
-      .project-grid { grid-template-columns: 1fr; }
-      .project-art { height: 245px; }
-      .section-heading { align-items: flex-start; flex-direction: column; }
-      .about-panel { grid-template-columns: 1fr; gap: 20px; }
-    }
-    @media (max-width: 430px) {
-      .brand-mark,.brand-fallback { width: 39px; height: 39px; }
-      .brand-name { font-size: 13px; }
-      .brand-role { font-size: 9px; }
-      .social-link { display: none; }
-      .hero { min-height: 700px; }
-      h1 { font-size: 53px; }
-      .hero-actions { align-items: flex-start; flex-direction: column; gap: 10px; }
-      .hero-note { font-size: 10px; }
-      section.content-section { padding: 65px 0; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
-</head>
-<body>
-  <div class="grain" aria-hidden="true"></div>
-  <header class="nav">
-    <div class="shell nav-inner">
-      <a class="brand" href="#home" aria-label="Go to homepage">
-        <!-- Put your own logo.png beside this index.html file. -->
-        <img class="brand-mark" src="logo.png" alt="Krylo Ltd logo" onerror="this.style.display='none';">
-        <span><span class="brand-name" id="brandName">Krylo Ltd</span><span class="brand-role" id="brandRole">Design · Development</span></span>
-      </a>
-      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
-        <a href="#about">About Me</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
-      </nav>
-      <a class="social-link" href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub profile" title="Edit this link to your GitHub organization">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.7 2.6 1.21 3.23.92.1-.72.39-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.53 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.08 1.14a10.7 10.7 0 0 1 5.6 0c2.14-1.44 3.08-1.14 3.08-1.14.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.3-2.61 5.25-5.1 5.52.4.35.75 1.03.75 2.08v3.07c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z" clip-rule="evenodd"/></svg>
-      </a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero shell" id="home">
-      <div class="hero-orb" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <div class="eyebrow"><span class="eyebrow-dot"></span> CREATIVE DESIGN & DIGITAL ENGINEERING</div>
-        <h1><span id="headlineLine1">design</span><br><span class="gradient-text" id="headlineLine2">&amp; development.</span></h1>
-        <p class="hero-description" id="heroDescription">Krylo Ltd is a creative technology group building distinctive visual identities, polished graphics, modern websites, and practical software experiences.</p>
-        <div class="hero-actions">
-          <a class="primary-btn" href="#projects"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></span><span>Explore our work</span></a>
-          <a class="text-btn" href="#contact">Let’s connect <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        </div>
-      </div>
-      <div class="hero-note"><span class="note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-2-5.8L4 11l6-2.2L12 3Z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z"/></svg></span><span><strong>Design meets technology</strong><br>Creative thinking. Clean execution.</span></div>
-    </section>
-
-    <section class="content-section shell" id="projects">
-      <div class="section-heading reveal">
-        <div><div class="section-kicker">Selected work · Krylo Ltd</div><h2>Design that works. Code that delivers.</h2></div>
-        <p class="section-intro">A sample of the creative and technical work we do—from graphic design and brand systems to web experiences and software tools.</p>
-      </div>
-      <div class="project-grid">
-        <article class="project-card reveal">
-          <div class="project-art" aria-hidden="true"><div class="mock-window"><div class="mock-dots"><i></i><i></i><i></i></div><div class="mock-line short"></div><div class="mock-line"></div><div class="mock-line" style="width:78%"></div><div class="mock-blocks"><span></span><span></span><span></span></div></div></div>
-          <div class="project-meta"><div class="project-type">UI / UX · Web app</div><h3 class="project-title">Krylo Analytics UI</h3><p class="project-desc">A clean interface concept that makes complex information easier to understand and act on.</p></div>
-        </article>
-        <article class="project-card reveal">
-          <div class="project-art" aria-hidden="true"><div class="mock-window"><div class="mock-dots"><i></i><i></i><i></i></div><div class="mock-line short"></div><div class="mock-line" style="width:86%"></div><div class="mock-blocks"><span></span><span></span></div></div></div>
-          <div class="project-meta"><div class="project-type">Branding · E-commerce</div><h3 class="project-title">Krylo Visual Identity</h3><p class="project-desc">A cohesive visual direction for digital campaigns, brand assets, and online presence.</p></div>
-        </article>
-        <article class="project-card reveal">
-          <div class="project-art" aria-hidden="true"><div class="mock-window"><div class="mock-dots"><i></i><i></i><i></i></div><div class="mock-line short"></div><div class="mock-line" style="width:70%"></div><div class="mock-blocks"><span></span><span></span><span></span></div></div></div>
-          <div class="project-meta"><div class="project-type">Product design · Mobile</div><h3 class="project-title">Krylo Web Experience</h3><p class="project-desc">A responsive web concept combining clear interface design with thoughtful interactions.</p></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="content-section shell" id="about">
-      <div class="about-panel reveal">
-        <div class="about-stat"><div class="stat-number">01</div><div class="stat-label">Curiosity first. Always.</div></div>
-        <div class="about-copy"><div class="section-kicker">About Krylo Ltd</div><h2>One team. Creative and technical thinking.</h2><p>Krylo Ltd is a creative group working across graphic design and programming. We bring visual craft and technical problem-solving together to create digital work that looks considered and works reliably.</p><p>From brand graphics and promotional visuals to websites, front-end interfaces, and custom code, our focus is on useful outcomes, consistent quality, and clear communication.</p><div class="skill-list"><span>Graphic Design</span><span>Brand Identity</span><span>Web Design</span><span>Frontend Development</span><span>Programming</span><span>UI / UX</span></div><div class="contact-reveal" id="aboutEmail"><span aria-hidden="true">✉</span><a href="mailto:yb.mabaling@gmail.com">yb.mabaling@gmail.com</a><button class="copy-email" type="button" data-copy-email>Copy email</button></div></div>
-      </div>
-    </section>
-
-    <section class="content-section shell" id="contact">
-      <div class="contact-panel reveal"><div class="section-kicker">Work with Krylo Ltd</div><h2>Have an idea? Let’s build it.</h2><p>Need graphics, a website, or a custom digital solution? Tell us what you’re working on and let’s discuss the next step.</p><a class="primary-btn" id="emailButton" href="mailto:yb.mabaling@gmail.com"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></span><span>Contact Krylo Ltd</span></a><div class="contact-reveal" id="contactEmail"><span aria-hidden="true">✉</span><a href="mailto:yb.mabaling@gmail.com">yb.mabaling@gmail.com</a><button class="copy-email" type="button" data-copy-email>Copy email</button></div></div>
-    </section>
-  </main>
-  <footer><div class="shell footer-inner"><span>© <span id="year"></span> <span id="footerName">Krylo Ltd</span>. Creative design & digital development.</span><a href="#home">Back to top ↑</a></div></footer>
-
-  <div class="email-toast" id="emailToast" role="status" aria-live="polite"><span aria-hidden="true">✉</span><div><strong>Email revealed</strong><span>yb.mabaling@gmail.com</span></div></div>
-  <script>
-    // QUICK CUSTOMIZATION: change these values to personalize your portfolio.
-    const SITE_CONFIG = {
-      name: "Krylo Ltd",
-      role: "Design · Development",
-      headlineTop: "design",
-      headlineBottom: "& development.",
-      description: "Krylo Ltd is a creative technology group building distinctive visual identities, polished graphics, modern websites, and practical software experiences.",
-      email: "yb.mabaling@gmail.com",
-      github: "https://github.com/ydadjahmabaling"
-    };
-
-    document.title = `${SITE_CONFIG.name} — ${SITE_CONFIG.role}`;
-    document.getElementById("brandName").textContent = SITE_CONFIG.name;
-    document.getElementById("brandRole").textContent = SITE_CONFIG.role;
-    document.getElementById("headlineLine1").textContent = SITE_CONFIG.headlineTop;
-    document.getElementById("headlineLine2").textContent = SITE_CONFIG.headlineBottom;
-    document.getElementById("heroDescription").textContent = SITE_CONFIG.description;
-    document.getElementById("footerName").textContent = SITE_CONFIG.name;
-    document.getElementById("year").textContent = new Date().getFullYear();
-    document.getElementById("emailButton").href = `mailto:${SITE_CONFIG.email}`;
-    document.querySelector(".social-link").href = SITE_CONFIG.github;
-    document.querySelector(".social-link").setAttribute("aria-label", "Krylo Ltd GitHub profile");
-
-    const menuToggle = document.getElementById("menuToggle");
-    const navLinks = document.getElementById("navLinks");
-    menuToggle.addEventListener("click", () => {
-      const isOpen = navLinks.classList.toggle("open");
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-    });
-    navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-      navLinks.classList.remove("open");
-      menuToggle.setAttribute("aria-expanded", "false");
-    }));
-
-    // Reveal sections only when they enter view; fallback for older browsers.
-    const revealItems = document.querySelectorAll(".reveal");
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            obs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
-      revealItems.forEach(item => observer.observe(item));
-    } else {
-      revealItems.forEach(item => item.classList.add("visible"));
-    }
-  </script>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101113">
+<meta name="description" content="Krylo Ltd — graphic design, digital experiences, and software development.">
+<title>Krylo Ltd — Creative Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#101113;--panel:#15171a;--line:#282a30;--muted:#90939d;--text:#eff1f4;--blue:#20b8f5;--mono:"DM Mono",monospace;--sans:Inter,system-ui,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:75px}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 var(--sans);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.07) .65px,transparent .65px);background-size:5px 5px;opacity:.3}
+body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(24,139,198,.1),transparent 44%)}
+a{color:inherit;text-decoration:none}button{font:inherit}.site{width:min(100%,610px);margin:auto;border-left:1px solid #202226;border-right:1px solid #202226;min-height:100vh;background:rgba(16,17,19,.55)}
+.topbar{height:60px;position:sticky;top:0;z-index:10;background:rgba(16,17,19,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav{height:100%;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}.brand img{width:43px;height:35px;object-fit:contain}.brand-name{display:block;font-size:13px;font-weight:800;letter-spacing:-.04em}.brand-sub{display:block;font:9px var(--mono);color:var(--muted);letter-spacing:.05em}
+.links{display:flex;gap:18px;align-items:center}.links a{font:10px var(--mono);color:#a5a7b0;text-transform:lowercase;transition:color .2s}.links a:hover,.links a.active{color:var(--blue)}
+.intro{height:157px;display:flex;justify-content:center;text-align:center;padding:46px 22px 20px;border-bottom:1px solid var(--line)}.intro p{margin:0;color:#a4a6b0;font-size:13px}.cursor{display:inline-block;width:6px;height:13px;background:var(--blue);margin-left:5px;vertical-align:-2px;animation:blink 1s steps(2,start) infinite}@keyframes blink{to{visibility:hidden}}
+.profile{display:grid;grid-template-columns:136px 1fr;gap:14px;padding:21px 12px;border-bottom:1px solid var(--line);align-items:center}
+.logo-frame{width:130px;height:130px;display:grid;place-items:center;border:1px solid #34373c;border-radius:50%;background:radial-gradient(circle at 40% 25%,#262c34,#121417 70%);overflow:hidden}.logo-frame img{width:74%;height:74%;object-fit:contain}
+.tag{display:inline-flex;align-items:center;gap:7px;border:1px solid #236d7a;background:rgba(16,120,140,.11);border-radius:4px;padding:3px 7px;font:9px var(--mono);color:#c7d9dc;margin-bottom:8px}.status{width:6px;height:6px;border-radius:50%;background:#a8f0c6;box-shadow:0 0 9px #5fdb9c}
+h1{font-size:clamp(18px,3.4vw,23px);font-weight:600;letter-spacing:-.045em;line-height:1.25;margin:0 0 6px;text-transform:uppercase}.verified{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#159ee2;color:white;font-size:10px;vertical-align:2px}.role{font:11px var(--mono);color:#a2a5ad}.role:before{content:"▹";color:var(--blue);padding-right:7px}
+.socials{display:flex;gap:7px;padding:14px 12px;border-bottom:1px solid var(--line)}.socials a{width:30px;height:30px;display:grid;place-items:center;border:1px solid #282b30;background:#191b1f;color:#c4c7cd;border-radius:4px;transition:.2s}.socials a:hover{transform:translateY(-2px);border-color:#276e8b;color:white}.socials svg{width:17px;height:17px;fill:currentColor}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:17px 12px;border-bottom:1px solid var(--line)}.fact{display:flex;gap:9px;min-width:0}.fact-icon{flex:0 0 23px;height:23px;display:grid;place-items:center;border:1px solid #2b2d32;border-radius:4px;color:#a4a8b1;background:#1a1c20}.fact strong{display:block;font:10px var(--mono);font-weight:500;color:#e0e1e5;overflow-wrap:anywhere}.fact small{display:block;font:9px var(--mono);color:#7f828c;margin-top:3px;overflow-wrap:anywhere}
+.section{padding:22px 12px;border-bottom:1px solid var(--line);scroll-margin-top:70px}.section-title{display:flex;align-items:center;gap:8px;margin:0 0 18px;font-size:15px;font-weight:500;letter-spacing:-.03em;text-transform:uppercase}.section-title .num{font:10px var(--mono);color:#838791}.section-title:after{content:"";height:1px;flex:1;background:repeating-linear-gradient(90deg,#292b30 0 3px,transparent 3px 6px)}.sq{width:7px;height:7px;background:var(--blue)}
+.copy{color:#a3a6ae;font-size:12px;line-height:1.9;margin:0}.copy strong{color:#e3e5e9;font-weight:500}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.card{border:1px solid #292c31;background:rgba(22,24,28,.8);padding:12px;border-radius:5px;transition:transform .25s,border-color .25s}.card:hover{transform:translateY(-3px);border-color:#31576a}.card-top{display:flex;justify-content:space-between;margin-bottom:8px}.icon{width:27px;height:27px;display:grid;place-items:center;border:1px solid #34373d;border-radius:5px;color:var(--blue)}.idx{font:10px var(--mono);color:#656973}.card h3,.project h3{font-size:12px;margin:0 0 4px;font-weight:600}.card p,.project p{font-size:11px;color:#8e929b;line-height:1.7;margin:0}
+.chips,.project-tags{display:flex;flex-wrap:wrap;gap:5px}.chip,.project-tags span{font:9px var(--mono);color:#aeb2bc;padding:4px 6px;border:1px solid #2a2d32;background:#191b1f;border-radius:3px}
+.project{padding:13px 0;border-top:1px solid #25272c;display:grid;grid-template-columns:26px 1fr auto;gap:9px;align-items:start}.project:first-of-type{border-top:0;padding-top:0}.project-num{font:11px var(--mono);color:var(--blue)}.project-tags{margin-top:7px}.type{font:9px var(--mono);border:1px solid #30333a;border-radius:3px;padding:3px 5px;color:#9da2ad;white-space:nowrap}
+.timeline{border-left:1px solid #2d3036;margin-left:5px;padding-left:17px}.step{position:relative;margin-bottom:16px}.step:last-child{margin-bottom:0}.step:before{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:var(--blue);left:-21px;top:6px}.step h3{font-size:12px;margin:0 0 4px}.step p{margin:0;color:#92959f;font-size:11px}
+.contact-box{border:1px solid #2a2d32;background:linear-gradient(135deg,#171a1e,#111315);padding:17px;border-radius:5px;position:relative;overflow:hidden}.contact-box h3{font-size:17px;letter-spacing:-.04em;margin:0 0 5px}.contact-box p{font-size:11px;color:#979ba5;margin:0 0 15px}.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid #247b9b;background:#112833;color:#dff7ff;border-radius:4px;padding:9px 12px;font:10px var(--mono);cursor:pointer;transition:transform .2s,background .2s}.btn:hover{transform:translateY(-2px);background:#163846}.email{display:none;margin-top:12px;padding-top:12px;border-top:1px solid #2a3439;font:12px var(--mono);color:#9ce4ff}.email.show{display:block;animation:rise .3s ease both}@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.footer{display:flex;justify-content:space-between;gap:8px;padding:17px 12px;color:#747883;font:9px var(--mono)}.footer a{color:#a3a6af}.footer a:hover{color:var(--blue)}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:560px){.site{border:0}.nav{padding:0 12px}.brand img{width:35px}.brand-sub{font-size:8px}.links{gap:10px}.links a{font-size:9px}.intro{height:135px;padding-top:38px}.profile{grid-template-columns:91px 1fr;gap:12px;padding:18px 12px}.logo-frame{width:88px;height:88px}.profile h1{font-size:17px}.facts{grid-template-columns:1fr;gap:12px}.section{padding:20px 12px}}
+@media(max-width:370px){.links{gap:7px}.links a{font-size:8px}.brand-name{font-size:11px}.profile{grid-template-columns:74px 1fr}.logo-frame{width:72px;height:72px}.profile h1{font-size:15px}.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style></head><body><div class="site">
+<header class="topbar"><div class="nav">
+<a class="brand" href="#home" aria-label="Krylo Ltd home"><img src="logo.png" alt="Krylo Ltd logo" onerror="this.style.visibility='hidden'"><span><span class="brand-name">KRYLO LTD</span><span class="brand-sub">CREATIVE TECHNOLOGY</span></span></a>
+<nav class="links" aria-label="Main navigation"><a href="#about">about</a><a href="#projects">projects</a><a href="#services">services</a><a href="#contact">contact</a></nav>
+</div></header>
+<main id="home">
+<div class="intro"><p>Graphic design and digital systems built with purpose<span class="cursor" aria-hidden="true"></span></p></div>
+<section class="profile"><div class="logo-frame"><img src="logo.png" alt="Krylo Ltd logo" onerror="this.style.visibility='hidden'"></div><div><div class="tag"><span class="status"></span> CREATIVE STUDIO ↗</div><h1>KRYLO LTD <span class="verified">✦</span></h1><div class="role">Graphic Design · Web · Programming</div></div></section>
+<div class="socials">
+<a href="https://github.com/ydadjahmabaling" target="_blank" rel="noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.7 2.6 1.21 3.23.92.1-.72.39-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.53 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.08 1.14a10.7 10.7 0 0 1 5.6 0c2.14-1.44 3.08-1.14 3.08-1.14.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.3-2.61 5.25-5.1 5.52.4.35.75 1.03.75 2.08v3.07c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z"/></svg></a>
+<a href="#contact" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3V5zm2 2v.5l7 5 7-5V7l-7 5-7-5zm14 10V9.9l-7 5-7-5V17h14z"/></svg></a>
+<a href="#projects" aria-label="Projects"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></a>
+</div>
+<div class="facts">
+<div class="fact"><span class="fact-icon">⌘</span><div><strong>Creative Technology Company</strong><small>Design · Development · Digital</small></div></div>
+<div class="fact"><span class="fact-icon">⌖</span><div><strong>Remote-first collaboration</strong><small>Working with ideas everywhere</small></div></div>
+<div class="fact"><span class="fact-icon">✉</span><div><strong>Company email</strong><small>Reveal in Contact section</small></div></div>
+<div class="fact"><span class="fact-icon">↗</span><div><strong>GitHub profile</strong><small>ydadjahmabaling</small></div></div>
+</div>
+<section class="section reveal" id="about"><h2 class="section-title"><span class="sq"></span><span class="num">01</span> ABOUT</h2><p class="copy">Krylo Ltd brings <strong>visual creativity and practical technology</strong> together. We work across graphic design, brand visuals, digital interfaces, and programming to shape ideas into clear, useful experiences. Our approach is straightforward: understand the goal, create with intention, and build with care.</p><p class="copy" style="margin-top:10px">From a brand asset or campaign graphic to a responsive website or custom-coded tool, we aim to make every detail feel considered and every solution serve a purpose.</p></section>
+<section class="section reveal" id="services"><h2 class="section-title"><span class="sq"></span><span class="num">02</span> CAPABILITIES</h2>
+<div class="grid">
+<article class="card"><div class="card-top"><span class="icon">✳</span><span class="idx">01</span></div><h3>Graphic Design</h3><p>Visual assets, campaign graphics, social content, and creative direction.</p></article>
+<article class="card"><div class="card-top"><span class="icon">◈</span><span class="idx">02</span></div><h3>Brand Identity</h3><p>Logos, visual systems, typography, and consistent brand presentation.</p></article>
+<article class="card"><div class="card-top"><span class="icon">⌘</span><span class="idx">03</span></div><h3>Web Design</h3><p>Modern, responsive websites with thoughtful user experiences.</p></article>
+<article class="card"><div class="card-top"><span class="icon">⟨/⟩</span><span class="idx">04</span></div><h3>Programming</h3><p>Frontend interfaces, interactive features, and practical web tools.</p></article>
+</div><h3 style="font-size:11px;font-weight:500;color:#a4a7b0;margin:20px 0 10px">TOOLS & TECHNOLOGIES</h3><div class="chips"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Git</span><span class="chip">Figma</span><span class="chip">Photoshop</span><span class="chip">Illustrator</span><span class="chip">Responsive UI</span></div></section>
+<section class="section reveal" id="projects"><h2 class="section-title"><span class="sq"></span><span class="num">03</span> SELECTED PROJECTS</h2>
+<article class="project"><span class="project-num">01</span><div><h3>Brand & Graphic Design</h3><p>A visual direction for digital-first brands, campaign assets, and social media graphics.</p><div class="project-tags"><span>Branding</span><span>Graphic Design</span><span>Visual Systems</span></div></div><span class="type">DESIGN</span></article>
+<article class="project"><span class="project-num">02</span><div><h3>Company Website</h3><p>A responsive web presence focused on clear messaging, polished interactions, and accessibility.</p><div class="project-tags"><span>HTML/CSS</span><span>JavaScript</span><span>Responsive</span></div></div><span class="type">WEB</span></article>
+<article class="project"><span class="project-num">03</span><div><h3>Digital Tools & Interfaces</h3><p>Interface concepts and small software utilities designed to simplify everyday workflows.</p><div class="project-tags"><span>UI</span><span>Programming</span><span>Prototyping</span></div></div><span class="type">BUILD</span></article>
+<p class="copy" style="margin-top:12px;font-size:10px">Starter examples — replace with real Krylo Ltd projects and links before publishing.</p></section>
+<section class="section reveal" id="experience"><h2 class="section-title"><span class="sq"></span><span class="num">04</span> HOW WE WORK</h2><div class="timeline">
+<div class="step"><h3>01 / Discover</h3><p>Clarify the audience, objective, scope, and success criteria.</p></div><div class="step"><h3>02 / Design</h3><p>Explore visual directions and map out a clear, usable experience.</p></div><div class="step"><h3>03 / Build</h3><p>Turn the chosen direction into polished assets, interfaces, or code.</p></div><div class="step"><h3>04 / Refine</h3><p>Test details, improve responsiveness, and prepare the work for delivery.</p></div>
+</div></section>
+<section class="section reveal" id="contact"><h2 class="section-title"><span class="sq"></span><span class="num">05</span> CONTACT</h2><div class="contact-box"><h3>Have a project in mind?</h3><p>Tell Krylo Ltd what you want to create. For design, web, or programming inquiries, reach out by email.</p><button class="btn" id="revealEmail" aria-expanded="false">↗ &nbsp; Reveal company email</button><div class="email" id="emailLine">yb.mabaling@gmail.com &nbsp; <a style="color:#d8f6ff" href="mailto:yb.mabaling@gmail.com">[ compose email ]</a></div></div></section>
+</main>
+<footer class="footer"><span>© <span id="year"></span> KRYLO LTD</span><span>DESIGN × CODE</span><a href="#home">BACK TO TOP ↑</a></footer>
+</div>
+<script>
+document.getElementById("year").textContent=new Date().getFullYear();
+const btn=document.getElementById("revealEmail"),email=document.getElementById("emailLine");
+btn.addEventListener("click",()=>{const open=email.classList.toggle("show");btn.setAttribute("aria-expanded",String(open));btn.innerHTML=open?"− &nbsp; Hide company email":"↗ &nbsp; Reveal company email"});
+document.querySelectorAll(".links a").forEach(a=>a.addEventListener("click",()=>{if(a.hash==="#contact"){email.classList.add("show");btn.setAttribute("aria-expanded","true");btn.innerHTML="− &nbsp; Hide company email"}}));
+if("IntersectionObserver"in window){const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target)}}),{threshold:.08,rootMargin:"0px 0px -20px 0px"});document.querySelectorAll(".reveal").forEach(e=>observer.observe(e));
+const nav=[...document.querySelectorAll(".links a")];const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)nav.forEach(a=>a.classList.toggle("active",a.hash==="#"+e.target.id))}),{rootMargin:"-25% 0px -65% 0px"});document.querySelectorAll("main section[id]").forEach(s=>so.observe(s))
+}else document.querySelectorAll(".reveal").forEach(e=>e.classList.add("visible"));
+</script></body></html>
