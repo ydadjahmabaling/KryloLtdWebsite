@@ -73,7 +73,8 @@
     .social-link:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(50,95,160,.16); }
     .social-link svg { width: 19px; height: 19px; }
     .menu-toggle { display: none; border: 0; background: rgba(255,255,255,.7); border-radius: 12px; padding: 10px; color: var(--ink); }
-    .hero { min-height: min(790px, calc(100svh - 90px)); display: flex; align-items: center; padding: 100px 0 112px; position: relative; }
+    .hero { min-height: min(790px, calc(100svh - 90px)); display: flex; align-items: center; padding: 100px 0 112px; position: relative; isolation: isolate; }
+    .hero::before { content: "K /"; position: absolute; right: 5%; top: 8%; z-index: -1; font: 800 clamp(120px,22vw,300px)/.8 "DM Sans", sans-serif; letter-spacing: -.12em; color: rgba(255,255,255,.28); transform: rotate(-8deg); pointer-events:none; }
     .hero-copy { width: min(880px, 76%); position: relative; z-index: 2; }
     .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 9px 14px; border-radius: 100px; border: 1px solid rgba(255,255,255,.9); background: rgba(255,255,255,.5); backdrop-filter: blur(16px); color: #31538a; font-size: 12px; font-weight: 600; letter-spacing: .06em; box-shadow: 0 8px 24px rgba(65,105,180,.07); }
     .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: #2d80ff; box-shadow: 0 0 0 4px rgba(45,128,255,.12); }
@@ -95,6 +96,21 @@
     .hero-orb::before { inset: 10%; border: 1px solid rgba(255,255,255,.62); box-shadow: 0 0 50px rgba(255,255,255,.5); }
     .hero-orb::after { width: 25%; height: 25%; top: 10%; right: 17%; background: rgba(255,255,255,.42); filter: blur(28px); }
     @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -16px; } }
+    @keyframes morphFloat { 0%,100% { translate: 0 0; border-radius: 44% 56% 58% 42% / 44% 43% 57% 56%; } 50% { translate: 0 -17px; border-radius: 57% 43% 43% 57% / 52% 58% 42% 48%; } }
+    .hero-orb { border-radius: 44% 56% 58% 42% / 44% 43% 57% 56%; animation: morphFloat 12s ease-in-out infinite; }
+    .project-card { transition: transform .55s var(--ease), box-shadow .45s ease, border-radius .45s var(--ease); }
+    .project-card:hover { border-radius: 22px 34px 22px 34px; }
+    .reveal { opacity: 0; transform: translateY(28px) scale(.985); filter: blur(4px); transition: opacity .8s var(--ease), transform .8s var(--ease), filter .8s var(--ease); }
+    .reveal.visible { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    .contact-reveal { display: inline-flex; align-items: center; gap: 12px; max-width: 100%; margin-top: 18px; padding: 12px 16px; border: 1px solid rgba(255,255,255,.94); border-radius: 16px; color: #173b79; background: rgba(255,255,255,.66); box-shadow: 0 10px 28px rgba(42,91,166,.10); backdrop-filter: blur(16px); opacity: 0; transform: translateY(9px); pointer-events: none; transition: opacity .35s ease, transform .45s var(--ease); }
+    .contact-reveal.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .contact-reveal a { font-weight: 700; overflow-wrap: anywhere; }
+    .copy-email { border: 0; border-radius: 10px; padding: 8px 10px; color: #fff; background: #246bfe; font: 600 11px "DM Sans",sans-serif; cursor: pointer; transition: transform .2s ease, background .2s ease; }
+    .copy-email:hover { background: #174cc8; transform: translateY(-1px); }
+    .email-toast { position: fixed; right: 22px; bottom: 22px; z-index: 50; padding: 15px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,.9); background: rgba(255,255,255,.8); backdrop-filter: blur(24px); box-shadow: var(--shadow); color: #203b69; display: flex; gap: 12px; align-items: center; opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .35s ease, transform .45s var(--ease); }
+    .email-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .email-toast strong { font-size: 13px; display:block; }
+    .email-toast span { color: var(--muted); font-size: 12px; }
     .hero-note { position: absolute; right: 4%; bottom: 12%; display: flex; align-items: center; gap: 12px; padding: 14px 17px; border-radius: 18px; border: 1px solid rgba(255,255,255,.85); background: rgba(255,255,255,.47); backdrop-filter: blur(18px); box-shadow: var(--shadow); color: #39537d; font-size: 12px; z-index: 3; }
     .note-icon { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 11px; background: linear-gradient(135deg,#e2f2ff,#b8d5ff); color: #2164e8; }
     .note-icon svg { width: 17px; height: 17px; }
@@ -235,16 +251,17 @@
     <section class="content-section shell" id="about">
       <div class="about-panel reveal">
         <div class="about-stat"><div class="stat-number">01</div><div class="stat-label">Curiosity first. Always.</div></div>
-        <div class="about-copy"><div class="section-kicker">About Krylo Ltd</div><h2>One team. Creative and technical thinking.</h2><p>Krylo Ltd is a creative group working across graphic design and programming. We bring visual craft and technical problem-solving together to create digital work that looks considered and works reliably.</p><p>From brand graphics and promotional visuals to websites, front-end interfaces, and custom code, our focus is on useful outcomes, consistent quality, and clear communication.</p><div class="skill-list"><span>Graphic Design</span><span>Brand Identity</span><span>Web Design</span><span>Frontend Development</span><span>Programming</span><span>UI / UX</span></div></div>
+        <div class="about-copy"><div class="section-kicker">About Krylo Ltd</div><h2>One team. Creative and technical thinking.</h2><p>Krylo Ltd is a creative group working across graphic design and programming. We bring visual craft and technical problem-solving together to create digital work that looks considered and works reliably.</p><p>From brand graphics and promotional visuals to websites, front-end interfaces, and custom code, our focus is on useful outcomes, consistent quality, and clear communication.</p><div class="skill-list"><span>Graphic Design</span><span>Brand Identity</span><span>Web Design</span><span>Frontend Development</span><span>Programming</span><span>UI / UX</span></div><div class="contact-reveal" id="aboutEmail"><span aria-hidden="true">✉</span><a href="mailto:yb.mabaling@gmail.com">yb.mabaling@gmail.com</a><button class="copy-email" type="button" data-copy-email>Copy email</button></div></div>
       </div>
     </section>
 
     <section class="content-section shell" id="contact">
-      <div class="contact-panel reveal"><div class="section-kicker">Work with Krylo Ltd</div><h2>Have an idea? Let’s build it.</h2><p>Need graphics, a website, or a custom digital solution? Tell us what you’re working on and let’s discuss the next step.</p><a class="primary-btn" id="emailButton" href="mailto:hello@example.com"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></span><span>Contact Krylo Ltd</span></a></div>
+      <div class="contact-panel reveal"><div class="section-kicker">Work with Krylo Ltd</div><h2>Have an idea? Let’s build it.</h2><p>Need graphics, a website, or a custom digital solution? Tell us what you’re working on and let’s discuss the next step.</p><a class="primary-btn" id="emailButton" href="mailto:yb.mabaling@gmail.com"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></span><span>Contact Krylo Ltd</span></a><div class="contact-reveal" id="contactEmail"><span aria-hidden="true">✉</span><a href="mailto:yb.mabaling@gmail.com">yb.mabaling@gmail.com</a><button class="copy-email" type="button" data-copy-email>Copy email</button></div></div>
     </section>
   </main>
   <footer><div class="shell footer-inner"><span>© <span id="year"></span> <span id="footerName">Krylo Ltd</span>. Creative design & digital development.</span><a href="#home">Back to top ↑</a></div></footer>
 
+  <div class="email-toast" id="emailToast" role="status" aria-live="polite"><span aria-hidden="true">✉</span><div><strong>Email revealed</strong><span>yb.mabaling@gmail.com</span></div></div>
   <script>
     // QUICK CUSTOMIZATION: change these values to personalize your portfolio.
     const SITE_CONFIG = {
@@ -253,8 +270,8 @@
       headlineTop: "design",
       headlineBottom: "& development.",
       description: "Krylo Ltd is a creative technology group building distinctive visual identities, polished graphics, modern websites, and practical software experiences.",
-      email: "hello@example.com",
-      github: "https://github.com/"
+      email: "yb.mabaling@gmail.com",
+      github: "https://github.com/ydadjahmabaling"
     };
 
     document.title = `${SITE_CONFIG.name} — ${SITE_CONFIG.role}`;
@@ -267,6 +284,7 @@
     document.getElementById("year").textContent = new Date().getFullYear();
     document.getElementById("emailButton").href = `mailto:${SITE_CONFIG.email}`;
     document.querySelector(".social-link").href = SITE_CONFIG.github;
+    document.querySelector(".social-link").setAttribute("aria-label", "Krylo Ltd GitHub profile");
 
     const menuToggle = document.getElementById("menuToggle");
     const navLinks = document.getElementById("navLinks");
