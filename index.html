@@ -93,7 +93,7 @@ document.getElementById("year").textContent=new Date().getFullYear();
 const intro=document.getElementById("introScreen"),site=document.getElementById("site"),mask=document.getElementById("introWordMask"),word=document.getElementById("introWord");
 const words=['digital','buy','gaming'];
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function showSite(){intro.classList.add('glitching');setTimeout(()=>{intro.classList.add('exit');site.classList.add('ready');document.body.style.overflow='';},480);}
+function showSite(){markIntroSeen();intro.classList.add('glitching');setTimeout(()=>{intro.classList.add('exit');site.classList.add('ready');document.body.style.overflow='';},480);}
 function swapWord(next){
   mask.classList.add('out');
   setTimeout(()=>{
@@ -112,7 +112,10 @@ function swapWord(next){
     word.style.animation='';
   },420);
 }
-if(reduced){intro.remove();site.classList.add('ready');}
+function introSeen(){try{return sessionStorage.getItem('krylo_intro')==='1';}catch(e){return false;}}
+function markIntroSeen(){try{sessionStorage.setItem('krylo_intro','1');}catch(e){}}
+const skipIntro=reduced||introSeen()||location.hash.length>1;
+if(skipIntro){intro.remove();site.classList.add('ready');document.body.style.overflow='';}
 else{
  document.body.style.overflow='hidden';
  let i=0;
@@ -126,6 +129,16 @@ if("IntersectionObserver"in window){
  const nav=[...document.querySelectorAll(".links a")];const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)nav.forEach(a=>a.classList.toggle("active",a.hash==="#"+e.target.id))}),{rootMargin:"-25% 0px -65% 0px"});
  document.querySelectorAll("main section[id]").forEach(s=>so.observe(s));
 }else document.querySelectorAll(".reveal").forEach(e=>e.classList.add("visible"));
+// In-page nav without reload or hash-jump
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const id=a.getAttribute('href');
+    if(id&&id.length>1){
+      const t=document.querySelector(id);
+      if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});try{history.replaceState(null,'',id);}catch(err){}}
+    }
+  });
+});
 </script>
 </body>
 </html>
